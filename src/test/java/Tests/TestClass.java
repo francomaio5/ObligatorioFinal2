@@ -71,14 +71,13 @@ public class TestClass {
                 "Mario Perez", "15341846135", "05", "2020", "758");
     }
 
-    @Test
+    /*@Test
     public void verifyAddCheckList() {
         logInPage = homePage.goLoginPage();
         homePage = logInPage.loginUser("maildetest8@gmail.com", "lacontrasenia1234");
         searchPage = homePage.searchElement("nokia");
         searchPage.addToWishList();
-
-    }
+    }*/
 
 
 }
