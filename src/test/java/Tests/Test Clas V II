@@ -1,0 +1,97 @@
+package Tests;
+
+import PageObject.*;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.Assert;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+
+public class TestClass {
+    WebDriver driver;
+    WebDriverWait wait;
+    BasePage basePage;
+    HomePage homePage;
+    NavigationBar navigationBar;
+    TopBar topBar;
+    RegisterPage registerPage;
+    RegisterCompletePage registerCompletePage;
+    LogInPage logInPage;
+    SearchPage searchPage;
+    CartPage cartPage;
+    CheckOutPage checkOutPage;
+    CheckOutConfirmationPage checkOutConfirmationPage;
+    WishListPage wishListPage;
+
+
+    @BeforeClass
+    public void  setUp(){
+        System.setProperty("webdriver.chrome.driver", "drivers/chromedriver.exe");
+        driver = new ChromeDriver();
+        driver.get("http://demo.nopcommerce.com/");
+        homePage = new HomePage(driver);
+    }
+
+
+    @Test
+    public void testRegistro(){
+        registerPage = homePage.goRegisterPage();
+        registerCompletePage = registerPage.registerNewUser("Juan", "Gonzales",
+                "maildetest14@gmail.com", "lacontrasenia1234");
+        Assert.assertTrue(registerCompletePage.registerConfirm());
+        Assert.assertTrue(registerCompletePage.logOutIconDisplayed().isDisplayed());
+    }
+
+    @Test
+    public void checkOutEefectivo() {
+        logInPage = homePage.goLoginPage();
+        homePage = logInPage.loginUser("maildetest14@gmail.com", "lacontrasenia1234");
+        searchPage = homePage.searchElement("nokia");
+        searchPage.addToCart();
+        cartPage = searchPage.goCartPage();
+        checkOutPage = cartPage.goCheckOutPage();
+        checkOutPage.billingAddressSet("Uruguay","Montevideo", "lala123",
+                "7487", "099477811");
+        checkOutPage.shippingAddressSet("Uruguay","Montevideo","Agraciasda",
+                "3511", "094778188");
+        checkOutPage.setShippingMethod("method");
+        checkOutPage.setPaymentMethAndInfo("No Credit Card", "", "",
+                "","", "", "");
+        checkOutConfirmationPage = checkOutPage.confirmOrder();
+    }
+
+    @Test
+    public void checkOutCreditCard() {
+        logInPage = homePage.goLoginPage();
+        homePage = logInPage.loginUser("maildetest14@gmail.com", "lacontrasenia1234");
+        searchPage = homePage.searchElement("nokia");
+        searchPage.addToCart();
+        cartPage = searchPage.goCartPage();
+        checkOutPage = cartPage.goCheckOutPage();
+        checkOutPage.billingAddressSet("Uruguay","Montevideo", "lala123",
+                "7487", "099477811");
+        checkOutPage.shippingAddressSet("Uruguay","Montevideo","Agraciasda",
+                "3511", "094778188");
+        checkOutPage.setShippingMethod("method");
+        checkOutPage.setPaymentMethAndInfo("Credit Card", "Visa", "Raul Perez",
+                "748887555312","05", "2020", "738");
+        checkOutConfirmationPage = checkOutPage.confirmOrder();
+    }
+
+    @Test
+    public void verifyAddWishList() {
+        logInPage = homePage.goLoginPage();
+        homePage = logInPage.loginUser("maildetest8@gmail.com", "lacontrasenia1234");
+        //assert de que fue logueado
+        searchPage = homePage.searchElement("nokia");
+        //assert de que el producto se encontro bien
+        searchPage.addToWishList();
+        //assert de que lo agrego al wishList *alerta*
+        wishListPage = searchPage.goWishListPage();
+        //assert de que esta realmente en la wishList
+
+    }
+
+
+}
